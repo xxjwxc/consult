@@ -1,3 +1,4 @@
+## [中文文档](README_zh.md)
 # consult
 A consul key/value tool for golang
 
