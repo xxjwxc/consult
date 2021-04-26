@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/xxjwxc/consult.svg?branch=master)](https://travis-ci.org/xxjwxc/consult)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xxjwxc/consult)](https://goreportcard.com/report/github.com/xxjwxc/consult)
+[![GoDoc](https://godoc.org/github.com/xxjwxc/consult?status.svg)](https://godoc.org/github.com/xxjwxc/consult)
+
 ## [中文文档](README_zh.md)
 # consult
 A consul key/value tool for golang
