@@ -1,35 +1,29 @@
 # consult
-golang 的一个操作 consul k/v 的工具
+A consul key/value tool for golang
 
-## 使用
+## Usage
 
-### 安装
+### install
 ```
 go get -u github.com/xxjwxc/consult@master
 ```
 
-### 新建一个连接
+### New Config
 ```golang
-import (
-	"github.com/xxjwxc/consult/consulkv"
-)
-
 conf := consulkv.NewConfig()
 ```
-or 
 
 ### With Options
 ```golang
 conf := consulkv.NewConfig(
-    consulkv.WithPrefix(prefix),             // consul kv 前缀
-    consulkv.WithAddress(address),           // consul 地址
-    consulkv.WithAuth(username, password),   // cosul 用户密码
+    consulkv.WithPrefix(prefix),             // consul kv prefix
+    consulkv.WithAddress(address),           // consul address
+    consulkv.WithAuth(username, password),   // cosul auth
     consulkv.WithToken(token),               // cousl token
     consulkv.WithLoger(loger),               // loger
 )
 
 ```
-
 
 ### Init
 ```golang
@@ -105,7 +99,7 @@ t := conf.Get(key).Time(defaultTime)
 conf.Get(key).Get(nextKey1).Get(nextKey2).String()
 ```
 
-### 监听
+### Watch
 ```golang
 conf.Watch(path, func(r *Result){
     r.Scan(x)
@@ -113,7 +107,7 @@ conf.Watch(path, func(r *Result){
 
 ```
 
-### 停止监听
+### Stop Watch
 ```golang
 // stop single watcher
 conf.StopWatch(path)
@@ -125,26 +119,28 @@ conf.StopWatch(path1, path2)
 conf.StopWatch()
 ```
 
-### 通过tag自动获取/自动更新
 
-- 定义变量时添加`consul:""`标签进行自动注册及获取
+### Automatic acquisition / update through go tag
+
+- When defining a variable, add the label `consult:""` to register and obtain automatically
 ```go
 import (
 	"github.com/xxjwxc/consult"
 )
 
 type Info struct {
-    Port  string  `yaml:"port" consul:"port"` // 端口号
+    Port  string  `yaml:"port" consul:"port"` // port
 }
 
 var info Info
-consult.AutoLoadConfig(conf, &info) //  自动加载
+consult.AutoLoadConfig(conf, &info) //  AutoLoad
 
-consult.AutoSetConfig(conf, &info, false) // 执行一次自动更新
+consult.AutoSetConfig(conf, &info, false) // AutoUpdate
 
 ```
 
-## 完整例子
+## example
+
 ```go 
 
 import (
