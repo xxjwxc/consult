@@ -1,6 +1,7 @@
 package consult
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
@@ -52,7 +53,19 @@ func (s *consulElement) scanObject(fieldv reflect.Value, field reflect.StructFie
 	case reflect.Slice:
 		result := s.conf.Get(key)
 		if result.Exists() {
-			result.Scan(fieldv.Interface())
+			bt := fmt.Sprintf("[%v]", string(result.Get()))
+			if fieldv.Type().String() == "[]string" { // 字符串
+				tmp := strings.Split(string(result.Get()), ",")
+				if len(tmp) > 0 {
+					bt = fmt.Sprintf(`["%v"]`, strings.Join(tmp, `","`))
+				}
+				tmp = []string{}
+
+				err := json.Unmarshal([]byte(bt), &tmp)
+				if err == nil {
+					fieldv.Set(reflect.ValueOf(tmp))
+				}
+			}
 		}
 		// if fieldv.Type().String() == "[]uint8" {
 		// 	x := []byte(data.(string))

@@ -25,7 +25,7 @@ func (r *Result) Err() error {
 }
 
 // Get ...
-func (r *Result) Get(path string) []byte {
+func (r *Result) Get() []byte {
 	return r.g
 }
 

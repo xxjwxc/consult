@@ -60,6 +60,7 @@ func TestMain(t *testing.T) {
 	AutoLoadConfig(conf, &config) //  自动加载
 
 	fmt.Println(config)
+	config.EtcdInfo.Addrs = append(config.EtcdInfo.Addrs, "192.155.1.150", "192.155.1.151")
 	AutoSetConfig(conf, &config, false) // 执行一次更新
 
 	fmt.Println(config)
