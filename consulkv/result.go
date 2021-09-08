@@ -19,14 +19,34 @@ type Result struct {
 	err error
 }
 
-// Err ...
-func (r *Result) Err() error {
+// GetK ...
+func (r *Result) GetK() string {
+	return r.k
+}
+
+// GetErr ...
+func (r *Result) GetErr() error {
 	return r.err
 }
 
-// Get ...
-func (r *Result) Get(path string) []byte {
+// GetG ...
+func (r *Result) GetG() []byte {
 	return r.g
+}
+
+// SetK ...
+func (r *Result) SetK(k string) {
+	r.k = k
+}
+
+// SetErr ...
+func (r *Result) SetErr(err error) {
+	r.err = err
+}
+
+// SetG ...
+func (r *Result) SetG(g []byte) {
+	r.g = g
 }
 
 // Scan ...
