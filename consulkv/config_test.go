@@ -37,8 +37,8 @@ func TestPut2(t *testing.T) {
 
 func TestGet(t *testing.T) {
 	ret := s.Get("test2")
-	if ret.Err() != nil {
-		t.Error(ret.Err())
+	if ret.GetErr() != nil {
+		t.Error(ret.GetErr())
 		return
 	}
 

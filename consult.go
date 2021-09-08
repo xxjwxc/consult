@@ -3,18 +3,16 @@ package consult
 import (
 	"errors"
 	"reflect"
-
-	"github.com/xxjwxc/consult/consulkv"
 )
 
 // AutoLoadConfig 自动加载config配置
-func AutoLoadConfig(conf *consulkv.Config, obj interface{}) error {
+func AutoLoadConfig(conf KVer, obj interface{}) error {
 	dataStruct := reflect.Indirect(reflect.ValueOf(obj))
 	if dataStruct.Kind() != reflect.Struct {
 		return errors.New("expected a pointer to a struct")
 	}
 
-	elm := &consulElement{conf}
+	elm := &element{conf}
 
 	dataStructType := dataStruct.Type()
 	for i := 0; i < dataStructType.NumField(); i++ { // 第一轮
@@ -30,7 +28,7 @@ func AutoLoadConfig(conf *consulkv.Config, obj interface{}) error {
 }
 
 // AutoSetConfig 自动设置config配置
-func AutoSetConfig(conf *consulkv.Config, obj interface{}, isUpdate bool) error {
+func AutoSetConfig(conf KVer, obj interface{}, isUpdate bool) error {
 	if !isUpdate { // 不用更新
 		list, err := conf.List()
 		if err != nil {
@@ -46,7 +44,7 @@ func AutoSetConfig(conf *consulkv.Config, obj interface{}, isUpdate bool) error 
 		return errors.New("expected a pointer to a struct")
 	}
 
-	elm := &consulElement{conf}
+	elm := &element{conf}
 
 	dataStructType := dataStruct.Type()
 	for i := 0; i < dataStructType.NumField(); i++ { // 第一轮

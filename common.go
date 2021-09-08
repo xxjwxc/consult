@@ -1,21 +1,22 @@
 package consult
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
 	"time"
 
-	"github.com/xxjwxc/consult/consulkv"
 	"github.com/xxjwxc/public/mylog"
 	"github.com/xxjwxc/public/tools"
 )
 
-type consulElement struct {
-	conf *consulkv.Config
+type element struct {
+	conf KVer
+	// conf consulConf
 }
 
-func (s *consulElement) scanObject(fieldv reflect.Value, field reflect.StructField, prefix string) error {
+func (s *element) scanObject(fieldv reflect.Value, field reflect.StructField, prefix string) error {
 	consulTag := field.Tag.Get("consul")
 	if consulTag == "" || consulTag == "-" { // 空,或者未设置表示忽略
 		return nil
@@ -52,7 +53,19 @@ func (s *consulElement) scanObject(fieldv reflect.Value, field reflect.StructFie
 	case reflect.Slice:
 		result := s.conf.Get(key)
 		if result.Exists() {
-			result.Scan(fieldv.Interface())
+			bt := fmt.Sprintf("[%v]", string(result.GetG()))
+			if fieldv.Type().String() == "[]string" { // 字符串
+				tmp := strings.Split(string(result.GetG()), ",")
+				if len(tmp) > 0 {
+					bt = fmt.Sprintf(`["%v"]`, strings.Join(tmp, `","`))
+				}
+				tmp = []string{}
+
+				err := json.Unmarshal([]byte(bt), &tmp)
+				if err == nil {
+					fieldv.Set(reflect.ValueOf(tmp))
+				}
+			}
 		}
 		// if fieldv.Type().String() == "[]uint8" {
 		// 	x := []byte(data.(string))
@@ -100,7 +113,7 @@ func (s *consulElement) scanObject(fieldv reflect.Value, field reflect.StructFie
 	return nil
 }
 
-func (s *consulElement) setObject(fieldv reflect.Value, field reflect.StructField, prefix string) error {
+func (s *element) setObject(fieldv reflect.Value, field reflect.StructField, prefix string) error {
 	consulTag := field.Tag.Get("consul")
 	if consulTag == "" || consulTag == "-" { // 空,或者未设置表示忽略
 		return nil

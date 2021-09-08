@@ -9,17 +9,17 @@ import (
 )
 
 type Config struct {
-	MySQLInfo    MysqlDbInfo `yaml:"mysql_info" consul:"mysql_info"`
-	RedisDbInfo  RedisDbInfo `yaml:"redis_info" consul:"redis_info"`
-	EtcdInfo     EtcdInfo    `yaml:"etcd_info" consul:"etcd_info"`
-	Oauth2Url    string      `yaml:"oauth2_url"`
-	Port         string      `yaml:"port" consul:"port"`                   // 端口号
-	TtvNum       int         `yaml:"ttv_num" consul:"ttv_num"`             // ttv数量
-	RegexHost    string      `yaml:"regex_host" consul:"regex_host"`       // 正则入库
-	AliTtsURI    string      `yaml:"ali_tts_uri"`                          // 阿里云tts地址
-	RegexMaxLen  int         `yaml:"regex_max_len" consul:"regex_max_len"` // 一次最大文字解析数
-	HaibuildHost []string    `yaml:"haibuild_host" consul:"haibuild_host"` // motion grpc 地址列表
-	ConsulAddr   string      `yaml:"consul_addr" consul:"consul_addr" `    // consul 地址
+	// MySQLInfo    MysqlDbInfo `yaml:"mysql_info" consul:"mysql_info"`
+	// RedisDbInfo  RedisDbInfo `yaml:"redis_info" consul:"redis_info"`
+	EtcdInfo EtcdInfo `yaml:"etcd_info" consul:"etcd_info"`
+	// Oauth2Url    string      `yaml:"oauth2_url"`
+	// Port         string      `yaml:"port" consul:"port"`                   // 端口号
+	// TtvNum       int         `yaml:"ttv_num" consul:"ttv_num"`             // ttv数量
+	// RegexHost    string      `yaml:"regex_host" consul:"regex_host"`       // 正则入库
+	// AliTtsURI    string      `yaml:"ali_tts_uri"`                          // 阿里云tts地址
+	// RegexMaxLen  int         `yaml:"regex_max_len" consul:"regex_max_len"` // 一次最大文字解析数
+	// HaibuildHost []string    `yaml:"haibuild_host" consul:"haibuild_host"` // motion grpc 地址列表
+	// ConsulAddr   string      `yaml:"consul_addr" consul:"consul_addr" `    // consul 地址
 }
 
 // MysqlDbInfo mysql database information. mysql 数据库信息
@@ -47,20 +47,21 @@ type RedisDbInfo struct {
 }
 
 func TestMain(t *testing.T) {
-	conf := consulkv.NewConfig(
-		consulkv.WithPrefix("service/servername"),  // consul kv prefix
-		consulkv.WithAddress("192.155.1.150:8500"), // consul address
+	kVer := consulkv.NewConfig(
+		consulkv.WithPrefix("service/servername"), // consul kv prefix
+		consulkv.WithAddress("127.0.0.1:8500"),    // consul address
 	)
-	if err := conf.Init(); err != nil {
+	if err := kVer.Init(); err != nil {
 		mylog.Error(err)
 		return
 	}
 
 	var config Config
-	AutoLoadConfig(conf, &config) //  自动加载
+	AutoLoadConfig(kVer, &config) //  自动加载
 
 	fmt.Println(config)
-	AutoSetConfig(conf, &config, false) // 执行一次更新
+	// config.EtcdInfo.Addrs = append(config.EtcdInfo.Addrs, "192.155.1.150", "127.0.0.1")
+	AutoSetConfig(kVer, &config, false) // 执行一次更新
 
 	fmt.Println(config)
 }
