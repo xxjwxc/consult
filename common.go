@@ -65,7 +65,9 @@ func (s *consulElement) scanObject(fieldv reflect.Value, field reflect.StructFie
 				if err == nil {
 					fieldv.Set(reflect.ValueOf(tmp))
 				}
+				return err
 			}
+
 		}
 		// if fieldv.Type().String() == "[]uint8" {
 		// 	x := []byte(data.(string))

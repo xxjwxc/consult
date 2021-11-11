@@ -1,7 +1,6 @@
 package consulkv
 
 import (
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"reflect"
@@ -88,7 +87,8 @@ func (r *Result) Uint(defaultValue ...uint64) uint64 {
 		return df
 	}
 
-	return binary.LittleEndian.Uint64(r.g)
+	data, _ := strconv.ParseInt(string(r.g), 10, 64)
+	return uint64(data)
 }
 
 // Bool ...
